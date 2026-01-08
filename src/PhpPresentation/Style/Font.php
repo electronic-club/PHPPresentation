@@ -163,6 +163,20 @@ class Font implements ComparableInterface
     private $characterSpacing = 0;
 
     /**
+     * Outline.
+     *
+     * @var Outline
+     */
+    private $outline;
+
+    /**
+     * Filled.
+     *
+     * @var bool
+     */
+    private $isFilled = true;
+
+    /**
      * Format.
      *
      * @var string
@@ -179,6 +193,7 @@ class Font implements ComparableInterface
     public function __construct()
     {
         $this->color = new Color(Color::COLOR_BLACK);
+        $this->outline = new Outline();
     }
 
     /**
@@ -516,6 +531,46 @@ class Font implements ComparableInterface
     }
 
     /**
+     * Get Outline.
+     */
+    public function getOutline(): Outline
+    {
+        return $this->outline;
+    }
+
+    /**
+     * Set outline.
+     *
+     * @param string $color ARGB or RGB color
+     * @param null|int $width Width in pixels
+     * @return $this
+     */
+    public function setOutline(string $color, ?int $width = null): self
+    {
+        $this->getOutline()->setSolid($color, $width);
+
+        return $this;
+    }
+
+    /**
+     * Is Filled?
+     */
+    public function isFilled(): bool
+    {
+        return $this->isFilled;
+    }
+
+    /**
+     * Set Filled.
+     */
+    public function setFilled(bool $value): self
+    {
+        $this->isFilled = $value;
+
+        return $this;
+    }
+
+    /**
      * Get format.
      */
     public function getFormat(): string
@@ -556,6 +611,8 @@ class Font implements ComparableInterface
             . ($this->strikethrough ? 't' : 'f')
             . $this->format
             . $this->color->getHashCode()
+            . $this->outline->getHashCode()
+            . ($this->isFilled ? 't' : 'f')
             . __CLASS__
         );
     }

@@ -295,7 +295,7 @@ abstract class AbstractSlide extends AbstractDecoratorWriter
             $objWriter->startElement('a:fld');
             $objWriter->writeAttribute('id', $this->getGUID());
             $objWriter->writeAttribute('type', (
-                Placeholder::PH_TYPE_SLIDENUM == $shape->getPlaceholder()->getType() ? 'slidenum' : 'datetime'
+            Placeholder::PH_TYPE_SLIDENUM == $shape->getPlaceholder()->getType() ? 'slidenum' : 'datetime'
             ));
 
             if (isset($paragraph)) {
@@ -309,7 +309,7 @@ abstract class AbstractSlide extends AbstractDecoratorWriter
             }
 
             $objWriter->writeElement('a:t', (
-                Placeholder::PH_TYPE_SLIDENUM == $shape->getPlaceholder()->getType() ? '<nr.>' : '03-04-05'
+            Placeholder::PH_TYPE_SLIDENUM == $shape->getPlaceholder()->getType() ? '<nr.>' : '03-04-05'
             ));
             $objWriter->endElement();
             $objWriter->endElement();
@@ -666,10 +666,17 @@ abstract class AbstractSlide extends AbstractDecoratorWriter
         // Baseline
         $objWriter->writeAttributeIf($element->getFont()->getBaseline() !== 0, 'baseline', $element->getFont()->getBaseline());
 
+        // Outline
+        $this->writeOutline($objWriter, $element->getFont()->getOutline());
+
         // Color - a:solidFill
-        $objWriter->startElement('a:solidFill');
-        $this->writeColor($objWriter, $element->getFont()->getColor());
-        $objWriter->endElement();
+        if ($element->getFont()->isFilled()) {
+            $objWriter->startElement('a:solidFill');
+            $this->writeColor($objWriter, $element->getFont()->getColor());
+            $objWriter->endElement();
+        } else {
+            $objWriter->writeElement('a:noFill');
+        }
 
         // Font
         // - a:latin
